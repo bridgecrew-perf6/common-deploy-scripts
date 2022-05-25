@@ -60,5 +60,3 @@ spec:
               value: "<ENVIRONMENT>"
             - name: SERVICE_VERSION
               value: "<SERVICE_VERSION>"
-            - name: CLUSTER_NAME
-              value: "<COLOR>"

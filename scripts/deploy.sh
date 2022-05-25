@@ -47,3 +47,16 @@ sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
 
 #kubectl apply -f ./manifests/deployment.yaml
 #kubectl apply -f ./manifests/service.yaml
+
+#set +e
+#./kubectl rollout status -w deployment/$SERVICE_NAME-$SERVICE_PASSIVE_COLOR -n=$ENVIRONMENT --timeout=20m
+#if [ $? -eq 0 ]; then
+#  set -e
+#  echo "OK"
+#else
+#  set -e
+#  ./kubectl delete deployment/$SERVICE_NAME-$SERVICE_PASSIVE_COLOR -n=$ENVIRONMENT --ignore-not-found=true
+#  ./kub-errornous-command-to-fail
+#fi
+
+
