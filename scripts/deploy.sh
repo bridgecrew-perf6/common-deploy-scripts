@@ -33,6 +33,17 @@ export MAX_MEM_REQUIRED=`yq -e eval ".server.environments.$ENVIRONMENT.resources
 export MIN_CPU_REQUIRED=`yq -e eval ".server.environments.$ENVIRONMENT.resources.min.cpu" $SERVER_CONFIG_FILE`
 export MAX_CPU_REQUIRED=`yq -e eval ".server.environments.$ENVIRONMENT.resources.max.cpu" $SERVER_CONFIG_FILE`
 
+sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
+    -e "s@<SERVICE_NAME>@$SERVICE_NAME@g" \
+    -e "s@<IMAGE_NAME>@$IMAGE_NAME@g" \
+    -e "s@<ENVIRONMENT>@$ENVIRONMENT@g" \
+    -e "s@<COLOR>@$SERVICE_PASSIVE_COLOR@g" \
+    -e "s@<REPLICAS>@$REPLICAS@g" \
+    -e "s@<MIN_MEM>@$MIN_MEM_REQUIRED@g" \
+    -e "s@<MAX_MEM>@$MAX_MEM_REQUIRED@g" \
+    -e "s@<MIN_CPU>@$MIN_CPU_REQUIRED@g" \
+    -e "s@<MAX_CPU>@$MAX_CPU_REQUIRED@g" \
+    ./common-deploy-scripts/manifests/deployment.yaml
 
 #kubectl apply -f ./manifests/deployment.yaml
 #kubectl apply -f ./manifests/service.yaml

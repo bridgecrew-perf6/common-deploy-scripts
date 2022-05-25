@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <SERVICE_NAME>-<COLOR>
+  namespace: <ENVIRONMENT>
+spec:
+  selector:
+    matchLabels:
+      uservice: <SERVICE_NAME>
+      version: <SERVICE_VERSION>
+      color: <COLOR>
+  replicas: <REPLICAS>
+  revisionHistoryLimit: 1
+  template:
+    metadata:
+      labels:
+        uservice: <SERVICE_NAME>
+        version: <SERVICE_VERSION>
+        color: <COLOR>
+    spec:
+      containers:
+        - name: <SERVICE_NAME>
+          image: "<IMAGE_NAME>"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "<MIN_MEM>"
+              cpu: "<MIN_CPU>"
+            limits:
+              memory: "<MAX_MEM>"
+              cpu: "<MAX_CPU>"
+          readinessProbe:
+            httpGet:
+              path: "/actuator/health"
+              port: 8080
+            initialDelaySeconds: 100
+            failureThreshold: 1
+            timeoutSeconds: 10
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: "/actuator/health"
+              port: 8080
+            initialDelaySeconds: 200
+            failureThreshold: 3
+            timeoutSeconds: 10
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              path: "/actuator/health"
+              port: 8080
+            failureThreshold: 60
+            periodSeconds: 10
+          env:
+            - name: CLUSTER_REGION
+              value: "<CLUSTER_REGION>"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "<ENVIRONMENT>"
+            - name: SERVICE_VERSION
+              value: "<SERVICE_VERSION>"
+            - name: CLUSTER_NAME
+              value: "<COLOR>"
