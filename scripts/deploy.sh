@@ -2,7 +2,7 @@
 
 echo $ECR_REGISTRY
 export SERVER_CONFIG_FILE="./manifests/config.yml"
-cd initial
+cd $PROJECT
 export SERVICE_NAME=`echo $GITHUB_REPOSITORY | awk -F "/" '{print $2}'`
 export VERSION=`bash ./gradlew -Pbuild_target=SNAPSHOT -q properties | grep version | sed -e "s@version: @@g"`
 export SERVICE_CODE=`echo "$VERSION" | cut -d '-' -f1`
@@ -47,15 +47,19 @@ sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
 
 #kubectl apply -f ./manifests/deployment.yaml
 #kubectl apply -f ./manifests/service.yaml
-
+sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
+    -e "s@<SERVICE_NAME>@$SERVICE_NAME@g" \
+    -e "s@<ENVIRONMENT>@$ENVIRONMENT@g" \
+    -e "s@<COLOR>@$SERVICE_PASSIVE_COLOR@g" \
+    ./common-deploy-scripts/manifests/service.yaml
 #set +e
-#./kubectl rollout status -w deployment/$SERVICE_NAME-$SERVICE_PASSIVE_COLOR -n=$ENVIRONMENT --timeout=20m
+#kubectl rollout status -w deployment/$SERVICE_NAME-$SERVICE_PASSIVE_COLOR -n=$ENVIRONMENT --timeout=20m
 #if [ $? -eq 0 ]; then
 #  set -e
 #  echo "OK"
 #else
 #  set -e
-#  ./kubectl delete deployment/$SERVICE_NAME-$SERVICE_PASSIVE_COLOR -n=$ENVIRONMENT --ignore-not-found=true
+#  kubectl delete deployment/$SERVICE_NAME-$SERVICE_PASSIVE_COLOR -n=$ENVIRONMENT --ignore-not-found=true
 #  ./kub-errornous-command-to-fail
 #fi
 
