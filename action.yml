@@ -8,5 +8,5 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: build-analyse.sh
+    - run: bash ./build-analyse.sh
       shell: bash
