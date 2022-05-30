@@ -1,0 +1,12 @@
+name: 'Build & Analyse'
+description: 'Build Module'
+inputs:
+  module:  # id of input
+    description: 'Module Path'
+    required: true
+    default: 'initial'
+runs:
+  using: "composite"
+  steps:
+    - run: build-analyse.sh
+      shell: bash
