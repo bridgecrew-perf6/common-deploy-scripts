@@ -6,7 +6,7 @@ cd $PROJECT
 export SERVICE_NAME=`echo $GITHUB_REPOSITORY | awk -F "/" '{print $2}'`
 export VERSION=`bash ./gradlew -Pbuild_target=SNAPSHOT -q properties | grep version | sed -e "s@version: @@g"`
 export SERVICE_CODE=`echo "$VERSION" | cut -d '-' -f1`
-export IMAGE_NAME="$ECR_REGISTRY/$SERVICE_NAME:$SERVICE_CODE.$COMMIT_HASH"
+export IMAGE_NAME="$ECR_REGISTRY/$SERVICE_NAME-$PROJECT:$SERVICE_CODE.$COMMIT_HASH"
 cd ..
 
 echo "$IMAGE_NAME"
