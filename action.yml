@@ -5,10 +5,16 @@ inputs:
     description: 'Module Path'
     required: true
     default: 'initial'
+  token:
+    description: 'A Github PAT'
+    required: true
 runs:
   using: "composite"
   steps:
     - run: echo "${{ github.action_path }}" >> $GITHUB_PATH
       shell: bash
     - run: buildAnalyse.sh
+      env:
+        PROJECT: ${{ inputs.module }}
+        AWS_ACCESS_KEY: ${{ inputs.token }}
       shell: bash
