@@ -17,7 +17,7 @@ aws eks update-kubeconfig --name poc-cluster --region us-east-1
 export COLOR1="blue"
 export COLOR2="green"
 
-#export SERVICE_ACTIVE_COLOR=$(kubectl get svc rest-uservice -n $ENVIRONMENT -o jsonpath='{.spec.selector.color}' --ignore-not-found=true)
+export SERVICE_ACTIVE_COLOR=$(kubectl get svc rest-uservice -n $ENVIRONMENT -o jsonpath='{.spec.selector.color}' --ignore-not-found=true)
 
 if [ "$SERVICE_ACTIVE_COLOR" == "$COLOR1" ]; then
   export SERVICE_PASSIVE_COLOR="$COLOR2"
@@ -43,7 +43,7 @@ sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
     -e "s@<MAX_MEM>@$MAX_MEM_REQUIRED@g" \
     -e "s@<MIN_CPU>@$MIN_CPU_REQUIRED@g" \
     -e "s@<MAX_CPU>@$MAX_CPU_REQUIRED@g" \
-    ./common-deploy-scripts/manifests/deployment.yaml
+    ./common-deploy-scripts/manifests/deployment.yaml | kubectl apply -f -
 
 #kubectl apply -f ./manifests/deployment.yaml
 #kubectl apply -f ./manifests/service.yaml
@@ -51,7 +51,7 @@ sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
     -e "s@<SERVICE_NAME>@$SERVICE_NAME@g" \
     -e "s@<ENVIRONMENT>@$ENVIRONMENT@g" \
     -e "s@<COLOR>@$SERVICE_PASSIVE_COLOR@g" \
-    ./common-deploy-scripts/manifests/service.yaml
+    ./common-deploy-scripts/manifests/service.yaml | kubectl apply -f -
 #set +e
 #kubectl rollout status -w deployment/$SERVICE_NAME-$SERVICE_PASSIVE_COLOR -n=$ENVIRONMENT --timeout=20m
 #if [ $? -eq 0 ]; then
@@ -63,4 +63,5 @@ sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
 #  ./kub-errornous-command-to-fail
 #fi
 
+kubectl delete deployment/$SERVICE_NAME-$SERVICE_CODE-$SERVICE_ACTIVE_COLOR -n=$ENVIRONMENT --ignore-not-found=true
 
