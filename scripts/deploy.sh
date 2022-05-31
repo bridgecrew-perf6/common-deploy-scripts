@@ -63,5 +63,5 @@ sed -e "s@<SERVICE_VERSION>@$SERVICE_CODE@g" \
 #  ./kub-errornous-command-to-fail
 #fi
 
-kubectl delete deployment/$SERVICE_NAME-$SERVICE_CODE-$SERVICE_ACTIVE_COLOR -n=$ENVIRONMENT --ignore-not-found=true
+kubectl delete deployment/$SERVICE_NAME-$SERVICE_ACTIVE_COLOR -n=$ENVIRONMENT --ignore-not-found=true
 
