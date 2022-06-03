@@ -12,7 +12,7 @@ cd ..
 echo "$IMAGE_NAME"
 
 aws sts get-caller-identity
-aws eks update-kubeconfig --name poc-cluster --region us-east-1
+aws eks update-kubeconfig --name test-cluster --region us-east-1
 
 export COLOR1="blue"
 export COLOR2="green"
