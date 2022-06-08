@@ -1,0 +1,27 @@
+name: reusable-workflow
+
+on:
+  workflow_call:
+    inputs:
+      module:
+        required: true
+        type: string
+
+jobs:
+  PR-CHECK:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: PR-BUILD
+      run: |
+        cd ${{ inputs.module }}
+        bash ./gradlew -Pbuild_target=SNAPSHOT clean build jacocoTestReport spotlessApply spotbugsMain
+        bash ./gradlew sonarqube -Dsonar.pullrequest.branch=${{ github.head_ref }} -Dsonar.pullrequest.base=${{ github.base_ref }} -Dsonar.pullrequest.key=${{ github.event.number }} showSonarQubeLink --info
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: "**/**/test-results/**/*.xml"
